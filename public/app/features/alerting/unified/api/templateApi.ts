@@ -25,6 +25,15 @@ export interface AlertField {
   labels: AnnoField[];
 }
 
+type AnnoField = {
+  key: string;
+  value: string;
+};
+export interface AlertFields {
+  annotations: AnnoField[];
+  labels: AnnoField[];
+}
+
 export const templatesApi = alertingApi.injectEndpoints({
   endpoints: (build) => ({
     previewPayload: build.mutation<TemplatesPreviewResponse, { template: string; alerts: AlertField[]; name: string }>({
