@@ -4,15 +4,12 @@ import { selectors } from '@grafana/e2e-selectors';
 import { Button } from '@grafana/ui';
 
 export interface Props {
-  exploreUrl: string;
   canSave: boolean;
-  canDelete: boolean;
-  onDelete: () => void;
-  onSubmit: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onSubmit: (event: any) => void;
   onTest: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export function ButtonRow({ canSave, canDelete, onDelete, onSubmit, onTest, exploreUrl }: Props) {
+export function ButtonRow({ canSave, onSubmit, onTest }: Props) {
   return (
     <div className="gf-form-button-row">
       {canSave && (
