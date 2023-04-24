@@ -5,7 +5,6 @@ import { TestProvider } from 'test/helpers/TestProvider';
 
 import { LayoutModes } from '@grafana/data';
 import { setAngularLoader } from '@grafana/runtime';
-import config from 'app/core/config';
 import { getRouteComponentProps } from 'app/core/navigation/__mocks__/routeProps';
 import { configureStore } from 'app/store/configureStore';
 
@@ -58,7 +57,6 @@ describe('<EditDataSourcePage>', () => {
   const dataSourceMeta = getMockDataSourceMeta();
   const dataSourceSettings = getMockDataSourceSettingsState();
   let store: Store;
-  const topnavValue = config.featureToggles.topnav;
 
   beforeAll(() => {
     setAngularLoader({
@@ -96,12 +94,7 @@ describe('<EditDataSourcePage>', () => {
     });
   });
 
-  afterAll(() => {
-    config.featureToggles.topnav = topnavValue;
-  });
-
   it('should render the edit page without an issue', async () => {
-    config.featureToggles.topnav = false;
     setup(uid, store);
 
     expect(screen.queryByText('Loading ...')).not.toBeInTheDocument();
@@ -119,7 +112,7 @@ describe('<EditDataSourcePage>', () => {
   it('should show updated action buttons when topnav is on', async () => {
     config.featureToggles.topnav = true;
     setup(uid, store);
-
+ 
     await waitFor(() => {
       // Buttons
       expect(screen.queryByRole('button', { name: /Delete/i })).toBeVisible();
