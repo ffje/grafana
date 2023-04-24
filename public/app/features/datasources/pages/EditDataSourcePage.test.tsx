@@ -4,7 +4,7 @@ import { Store } from 'redux';
 import { TestProvider } from 'test/helpers/TestProvider';
 
 import { LayoutModes } from '@grafana/data';
-import { setAngularLoader } from '@grafana/runtime';
+import { setAngularLoader, config } from '@grafana/runtime';
 import { getRouteComponentProps } from 'app/core/navigation/__mocks__/routeProps';
 import { configureStore } from 'app/store/configureStore';
 
@@ -112,7 +112,7 @@ describe('<EditDataSourcePage>', () => {
   it('should show updated action buttons when topnav is on', async () => {
     config.featureToggles.topnav = true;
     setup(uid, store);
- 
+
     await waitFor(() => {
       // Buttons
       expect(screen.queryByRole('button', { name: /Delete/i })).toBeVisible();
