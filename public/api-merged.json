@@ -5654,7 +5654,7 @@
           "folders"
         ],
         "summary": "Gets the count of each descendant of a folder by kind. The folder is identified by UID.",
-        "operationId": "getFolderChildrenCounts",
+        "operationId": "getFolderDescendantCounts",
         "parameters": [
           {
             "type": "string",
@@ -5665,7 +5665,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/getFolderChildrenCountsResponse"
+            "$ref": "#/responses/getFolderDescendantCountsResponse"
           },
           "401": {
             "$ref": "#/responses/unauthorisedError"
@@ -13090,6 +13090,13 @@
         }
       }
     },
+    "DescendantCounts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "format": "int64"
+      }
+    },
     "DiscordConfig": {
       "type": "object",
       "title": "DiscordConfig configures notifications via Discord.",
@@ -13586,19 +13593,9 @@
         }
       }
     },
-    "FolderChildrenCounts": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "integer",
-        "format": "int64"
-      }
-    },
     "FolderSearchHit": {
       "type": "object",
       "properties": {
-        "accessControl": {
-          "$ref": "#/definitions/Metadata"
-        },
         "id": {
           "type": "integer",
           "format": "int64"
@@ -20336,10 +20333,10 @@
         "$ref": "#/definitions/DataSourceList"
       }
     },
-    "getFolderChildrenCountsResponse": {
+    "getFolderDescendantCountsResponse": {
       "description": "(empty)",
       "schema": {
-        "$ref": "#/definitions/FolderChildrenCounts"
+        "$ref": "#/definitions/DescendantCounts"
       }
     },
     "getFolderPermissionListResponse": {
