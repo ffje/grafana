@@ -953,7 +953,7 @@ func TestNestedFolderService(t *testing.T) {
 	})
 }
 
-func TestGetChildrenCounts(t *testing.T) {
+func TestGetDescendantCounts(t *testing.T) {
 	g := guardian.New
 	guardian.MockDashboardGuardian(&guardian.FakeDashboardGuardian{CanViewValue: true})
 	t.Cleanup(func() {
@@ -1003,7 +1003,7 @@ func TestGetChildrenCounts(t *testing.T) {
 
 	signedInUser := user.SignedInUser{UserID: 1, OrgID: orgID}
 	ctx := appcontext.WithUser(context.Background(), &signedInUser)
-	res, err := folderService.GetChildrenCounts(ctx, &folder.GetChildrenCountsQuery{
+	res, err := folderService.GetDescendantCounts(ctx, &folder.GetDescendantCountsQuery{
 		SignedInUser: usr,
 		UID:          &folderUID,
 		OrgID:        orgID,
