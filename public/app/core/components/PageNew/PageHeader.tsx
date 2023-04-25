@@ -1,9 +1,9 @@
 import { css } from '@emotion/css';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { NavModelItem, GrafanaTheme2 } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
-import { Badge, InlineField, InlineSwitch, Input, useStyles2 } from '@grafana/ui';
+import { Badge, IconButton, InlineField, InlineSwitch, Input, useStyles2 } from '@grafana/ui';
 
 import { PageInfoItem } from '../Page/types';
 import { PageInfo } from '../PageInfo/PageInfo';
@@ -33,43 +33,74 @@ export function PageHeader({
 }: Props) {
   const styles = useStyles2(getStyles);
   const sub = subTitle ?? navItem.subTitle;
-  const nameInput = (
-    <Input
-      id="basic-settings-name"
-      type="text"
-      value={dataSourceName}
-      placeholder="Name"
-      onChange={(event) => onNameChange(event.currentTarget.value)}
-      required
-      data-testid={selectors.pages.DataSource.name}
-    ></Input>
-  );
+  const [isNameEditable, setIsNameEditable] = useState(false);
 
   return (
     <div className={styles.pageHeader}>
-      <div className={styles.topRow}>
-        <div className={styles.titleInfoContainer}>
-          <div className={styles.title}>
-            {navItem.img && <img className={styles.img} src={navItem.img} alt={`logo for ${navItem.text}`} />}
-            {nameInput}
-          </div>
-          {info && <PageInfo info={info} />}
+      {navItem.img && <img className={styles.img} src={navItem.img} alt={`logo for ${navItem.text}`} />}
+      <div className={styles.titleInfoContainer}>
+        <div className={styles.title}>
+          <DatasourceNameInput
+            dataSourceName={dataSourceName}
+            onNameChange={onNameChange}
+            isNameEditable={isNameEditable}
+            className={styles.datasourceNameInput}
+          />
+          {!isNameEditable && (
+            <IconButton
+              name="pen"
+              onClick={() => setIsNameEditable(!isNameEditable)}
+              size="lg"
+              className={styles.editIcon}
+            />
+          )}
         </div>
-        <div className={styles.actions}>{actions}</div>
+        {info && <PageInfo info={info!} />}
+        <div className={styles.bottomRow}>
+          {sub && <div className={styles.subTitle}>{sub}</div>}
+          <DefaultDataSourceSwitch
+            isDefault={isDefault}
+            onDefaultChange={onDefaultChange}
+            className={styles.defaultDataSourceSwitch}
+          />
+          <AlertingEnabled enabled={alertingSupported} />
+        </div>
       </div>
-      <div className={styles.bottomRow}>
-        {sub && <div className={styles.subTitle}>{sub}</div>}
-        <DefaultDataSourceSwitch
-          isDefault={isDefault}
-          onDefaultChange={onDefaultChange}
-          className={styles.defaultDataSourceSwitch}
-        />
-        <AlertingEnabled enabled={alertingSupported} />
-      </div>
+      <div className={styles.actions}>{actions}</div>
     </div>
   );
 }
-
+function DatasourceNameInput({
+  dataSourceName,
+  onNameChange,
+  isNameEditable,
+  className,
+}: {
+  dataSourceName: string;
+  onNameChange: Function;
+  isNameEditable: boolean;
+  className: string;
+}) {
+  return (
+    <>
+      {!isNameEditable ? (
+        <h1>{dataSourceName}</h1>
+      ) : (
+        <div className={className}>
+          <Input
+            id="basic-settings-name"
+            type="text"
+            value={dataSourceName}
+            placeholder="Name"
+            onChange={(event) => onNameChange(event.currentTarget.value)}
+            required
+            data-testid={selectors.pages.DataSource.name}
+          ></Input>
+        </div>
+      )}
+    </>
+  );
+}
 function AlertingEnabled({ enabled }: { enabled: boolean }) {
   return (
     <>
@@ -130,6 +161,10 @@ const getStyles = (theme: GrafanaTheme2) => {
     title: css({
       display: 'flex',
       flexDirection: 'row',
+      alignItems: 'center',
+      h1: {
+        margin: '0 0 0 0',
+      },
     }),
     actions: css({
       display: 'flex',
@@ -140,15 +175,17 @@ const getStyles = (theme: GrafanaTheme2) => {
       display: 'flex',
       label: 'title-info-container',
       flex: 1,
+      flexDirection: 'column',
       flexWrap: 'wrap',
       gap: theme.spacing(1, 4),
       justifyContent: 'space-between',
       maxWidth: '100%',
     }),
     pageHeader: css({
+      alignItems: 'center',
       label: 'page-header',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       gap: theme.spacing(1),
       marginBottom: theme.spacing(2),
     }),
@@ -161,9 +198,19 @@ const getStyles = (theme: GrafanaTheme2) => {
       color: theme.colors.text.secondary,
     }),
     img: css({
-      width: '32px',
-      height: '32px',
+      width: '64px',
+      height: '64px',
       marginRight: theme.spacing(2),
+    }),
+    datasourceNameInput: css({
+      input: {
+        fontSize: '28px',
+        padding: '6px 8px',
+        height: '40px',
+      },
+    }),
+    editIcon: css({
+      marginLeft: theme.spacing(1),
     }),
     defaultDataSourceSwitch: css({
       margin: '0 0 0 0',
