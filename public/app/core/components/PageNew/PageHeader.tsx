@@ -19,7 +19,7 @@ export interface Props {
   info?: PageInfoItem[];
   subTitle?: React.ReactNode;
 }
-// this is the pageHeader. Needs custom componnet of editable name input, default datasource toggle, alerging badge
+
 export function PageHeader({
   navItem,
   actions,
@@ -59,8 +59,12 @@ export function PageHeader({
       </div>
       <div className={styles.bottomRow}>
         {sub && <div className={styles.subTitle}>{sub}</div>}
+        <DefaultDataSourceSwitch
+          isDefault={isDefault}
+          onDefaultChange={onDefaultChange}
+          className={styles.defaultDataSourceSwitch}
+        />
         <AlertingEnabled enabled={alertingSupported} />
-        <DefaultDataSourceSwitch isDefault={isDefault} onDefaultChange={onDefaultChange} />
       </div>
     </div>
   );
@@ -78,11 +82,28 @@ function AlertingEnabled({ enabled }: { enabled: boolean }) {
   );
 }
 
-function DefaultDataSourceSwitch({ isDefault, onDefaultChange }: { isDefault: boolean; onDefaultChange: Function }) {
+function DefaultDataSourceSwitch({
+  isDefault,
+  onDefaultChange,
+  className,
+}: {
+  isDefault: boolean;
+  onDefaultChange: Function;
+  className: string;
+}) {
   return (
-    <InlineField label="Default" labelWidth={8}>
+    <InlineField
+      label="Default"
+      tooltip="This datasource is used when you select the data source in panels. The default data source is
+      'preselected in new panels."
+      transparent={true}
+      labelWidth={8}
+      disabled={false}
+      className={className}
+    >
       <InlineSwitch
         id="basic-settings-default"
+        transparent={true}
         value={isDefault}
         onChange={(event: React.FormEvent<HTMLInputElement>) => onDefaultChange(event.currentTarget.checked)}
       />
@@ -143,6 +164,9 @@ const getStyles = (theme: GrafanaTheme2) => {
       width: '32px',
       height: '32px',
       marginRight: theme.spacing(2),
+    }),
+    defaultDataSourceSwitch: css({
+      margin: '0 0 0 0',
     }),
   };
 };
