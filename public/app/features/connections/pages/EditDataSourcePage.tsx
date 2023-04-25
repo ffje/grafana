@@ -20,6 +20,7 @@ export function EditDataSourcePage() {
       navId={navId}
       pageNav={pageNav}
       actions={config.featureToggles.topnav ? <EditDataSourceActions uid={uid} /> : undefined}
+      datasourceId={uid}
     >
       <Page.Contents>
         <EditDataSource uid={uid} pageId={pageId} />

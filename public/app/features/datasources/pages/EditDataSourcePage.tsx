@@ -21,6 +21,7 @@ export function EditDataSourcePage(props: Props) {
       navId="datasources"
       pageNav={nav.main}
       actions={config.featureToggles.topnav ? <EditDataSourceActions uid={uid} /> : undefined}
+      datasourceId={uid}
     >
       <Page.Contents>
         <EditDataSource uid={uid} pageId={pageId} />

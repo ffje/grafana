@@ -3,9 +3,13 @@ import { css, cx } from '@emotion/css';
 import React, { useLayoutEffect } from 'react';
 
 import { GrafanaTheme2, PageLayoutType } from '@grafana/data';
+import { getDataSourceSrv } from '@grafana/runtime';
 import { CustomScrollbar, useStyles2 } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
+import { useDataSource } from 'app/features/datasources/state';
+import { useDispatch } from 'app/types';
 
+import { setDataSourceName, setIsDefault } from '../../../features/datasources/state';
 import { PageType } from '../Page/types';
 import { usePageNav } from '../Page/usePageNav';
 import { usePageTitle } from '../Page/usePageTitle';
@@ -28,13 +32,22 @@ export const Page: PageType = ({
   toolbar,
   scrollTop,
   scrollRef,
+  datasourceId,
   ...otherProps
 }) => {
   const styles = useStyles2(getStyles);
+  const dispatch = useDispatch();
+  const dataSource = useDataSource(datasourceId!);
   const navModel = usePageNav(navId, oldNavProp);
   const { chrome } = useGrafana();
 
   usePageTitle(navModel, pageNav);
+  const dsi = getDataSourceSrv()?.getInstanceSettings(dataSource.uid);
+  const hasAlertingEnabled = Boolean(dsi?.meta?.alerting ?? false);
+  const isAlertManagerDatasource = dsi?.type === 'alertmanager';
+  const alertingSupported = hasAlertingEnabled || isAlertManagerDatasource;
+  const onDefaultChange = (value: boolean) => dispatch(setIsDefault(value));
+  const onNameChange = (name: string) => dispatch(setDataSourceName(name));
 
   const pageHeaderNav = pageNav ?? navModel?.node;
 
@@ -58,8 +71,12 @@ export const Page: PageType = ({
             {pageHeaderNav && (
               <PageHeader
                 actions={actions}
+                dataSourceName={dataSource.name}
+                isDefault={dataSource.isDefault}
+                onNameChange={onNameChange}
+                onDefaultChange={onDefaultChange}
+                alertingSupported={alertingSupported}
                 navItem={pageHeaderNav}
-                renderTitle={renderTitle}
                 info={info}
                 subTitle={subTitle}
               />
