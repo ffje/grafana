@@ -2,9 +2,7 @@ import React from 'react';
 
 import { selectors } from '@grafana/e2e-selectors';
 import { config } from '@grafana/runtime';
-import { Button, LinkButton } from '@grafana/ui';
-import { contextSrv } from 'app/core/core';
-import { AccessControlAction } from 'app/types';
+import { Button } from '@grafana/ui';
 
 export interface Props {
   exploreUrl: string;
@@ -16,8 +14,6 @@ export interface Props {
 }
 
 export function ButtonRow({ canSave, canDelete, onDelete, onSubmit, onTest, exploreUrl }: Props) {
-  const canExploreDataSources = contextSrv.hasPermission(AccessControlAction.DataSourcesExplore);
-
   return (
     <div className="gf-form-button-row">
       {!config.featureToggles.topnav && (
@@ -25,9 +21,6 @@ export function ButtonRow({ canSave, canDelete, onDelete, onSubmit, onTest, expl
           Back
         </Button>
       )}
-      <LinkButton variant="secondary" fill="solid" href={exploreUrl} disabled={!canExploreDataSources}>
-        Explore
-      </LinkButton>
       {!config.featureToggles.topnav && (
         <Button
           type="button"
