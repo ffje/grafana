@@ -14,7 +14,7 @@ import { constructDataSourceExploreUrl } from '../utils';
 const getStyles = (theme: GrafanaTheme2) => {
   return {
     button: css({
-      marginLeft: theme.spacing(2),
+      marginLeft: theme.spacing(1),
     }),
   };
 };
@@ -35,30 +35,11 @@ export function EditDataSourceActions({ uid }: Props) {
 
   return (
     <>
-      <LinkButton
-        icon="apps"
-        fill="outline"
-        variant="secondary"
-        href={`dashboard/new-with-ds/${dataSource.uid}`}
-        onClick={() => {
-          trackCreateDashboardClicked({
-            grafana_version: config.buildInfo.version,
-            datasource_uid: dataSource.uid,
-            plugin_name: dataSource.typeName,
-            path: location.pathname,
-          });
-        }}
-      >
-        Build a dashboard
-      </LinkButton>
-
       {hasExploreRights && (
-        <LinkButton
-          icon="compass"
-          fill="outline"
+        <Button
+          type="button"
           variant="secondary"
-          className={styles.button}
-          href={constructDataSourceExploreUrl(dataSource)}
+          disabled={!canDelete}
           onClick={() => {
             trackExploreClicked({
               grafana_version: config.buildInfo.version,
@@ -66,12 +47,30 @@ export function EditDataSourceActions({ uid }: Props) {
               plugin_name: dataSource.typeName,
               path: location.pathname,
             });
+            location.href = constructDataSourceExploreUrl(dataSource);
           }}
+          className={styles.button}
         >
-          Explore
-        </LinkButton>
+          Explore data
+        </Button>
       )}
-
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={!canDelete}
+        onClick={() => {
+          trackCreateDashboardClicked({
+            grafana_version: config.buildInfo.version,
+            datasource_uid: dataSource.uid,
+            plugin_name: dataSource.typeName,
+            path: location.pathname,
+          });
+          location.href = `dashboard/new-with-ds/${dataSource.uid}`;
+        }}
+        className={styles.button}
+      >
+        View dashboards
+      </Button>
       <Button type="button" variant="destructive" disabled={!canDelete} onClick={onDelete} className={styles.button}>
         Delete
       </Button>
