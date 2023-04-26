@@ -5,7 +5,7 @@ import { Button } from '@grafana/ui';
 
 export interface Props {
   canSave: boolean;
-  onSubmit: (event: any) => void;
+  onSubmit: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onTest: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
@@ -17,7 +17,7 @@ export function ButtonRow({ canSave, onSubmit, onTest }: Props) {
           type="submit"
           variant="primary"
           disabled={!canSave}
-          onClick={(event) => onSubmit(event)}
+          onClick={onSubmit}
           aria-label={selectors.pages.DataSource.saveAndTest}
         >
           Save &amp; test
